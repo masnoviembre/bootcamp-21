@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/accounts")
-public class AccountController {
+public class AccountController { 
 
     @Autowired
     private AccountService accountService;

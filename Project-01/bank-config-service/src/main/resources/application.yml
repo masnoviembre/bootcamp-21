@@ -7,7 +7,8 @@ spring:
         git:
           default-label: main
           uri: https://github.com/masnoviembre/bootcamp-21
-          search-paths: Project01/bank-config-data
+          search-paths:
+                - Project-01/bank-config-data
   application:
     name: bank-config-service
 

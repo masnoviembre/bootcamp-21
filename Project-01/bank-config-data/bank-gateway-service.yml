@@ -17,27 +17,27 @@ spring:
         locator:
           enabled: true
       routes:
-	- id: bank-client-service
+        - id: bank-client-service
           uri: lb://bank-client-service
           predicates:
             - path=/clients/**
-	- id: bank-product-service
+        - id: bank-product-service
           uri: lb://bank-product-service
           predicates:
             - path=/products/**
-	- id: bank-account-service
+        - id: bank-account-service
           uri: lb://bank-account-service
           predicates:
             - path=/accounts/**
-	- id: bank-credit-service
+        - id: bank-credit-service
           uri: lb://bank-credit-service
           predicates:
             - path=/credits/**
-	- id: bank-transaction-account-service
+        - id: bank-transaction-account-service
           uri: lb://bank-transaction-account-service
           predicates:
             - path=/transactions/accounts/**
-	- id: bank-transaction-credit-service
+        - id: bank-transaction-credit-service
           uri: lb://bank-transaction-credit-service
           predicates:
             - path=/bank-transactions/credits/**

@@ -21,7 +21,7 @@ public class ExternalService {
 
     private final WebClient webCredit = WebClient
                                         .builder()
-                                        .baseUrl("http://localhost:8004")
+                                        .baseUrl("http://bank-credit-service")
                                         .build();
 
     public Flux<AccountDto> getAccountByClientId(Integer clientId) {

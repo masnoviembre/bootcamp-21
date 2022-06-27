@@ -1,16 +1,15 @@
-package com.nttdata.bank.client;
+package com.nttdata.bank.gateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableEurekaClient
-public class BankClientServiceApplication {
+public class BankGatewayServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BankClientServiceApplication.class, args);
+		SpringApplication.run(BankGatewayServiceApplication.class, args);
 	}
 
 }

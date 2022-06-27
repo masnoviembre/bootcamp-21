@@ -1,11 +1,14 @@
 package com.nttdata.bank.product.controller;
 
-import com.nttdata.bank.product.model.document.Product;
+import com.nttdata.bank.product.model.entity.document.Product;
+import com.nttdata.bank.product.model.entity.dto.ProductDto;
 import com.nttdata.bank.product.model.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/products")
@@ -25,13 +28,13 @@ public class ProductController {
     }
 
     @PostMapping
-    public Mono<Product> save(@RequestBody Product product){
-        return productService.save(product);
+    public Mono<Product> save(@Valid @RequestBody ProductDto productDto){
+        return productService.save(productDto);
     }
 
     @PostMapping("/updProducts")
-    public Mono<Product> update(@RequestBody Product product){
-        return productService.update(product);
+    public Mono<Product> update(@Valid @RequestBody ProductDto productDto){
+        return productService.update(productDto);
     }
 
     @PostMapping("/delete/{productId}")

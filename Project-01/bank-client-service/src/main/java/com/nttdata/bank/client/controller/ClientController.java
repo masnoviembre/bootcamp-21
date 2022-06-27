@@ -1,8 +1,9 @@
 package com.nttdata.bank.client.controller;
 
-import com.nttdata.bank.client.model.document.Account;
-import com.nttdata.bank.client.model.document.Client;
-import com.nttdata.bank.client.model.document.Credit;
+import com.nttdata.bank.client.model.entity.document.Client;
+import com.nttdata.bank.client.model.entity.dto.AccountDto;
+import com.nttdata.bank.client.model.entity.dto.ClientDto;
+import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.service.ClientService;
 import com.nttdata.bank.client.service.ExternalService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/clients")
 public class ClientController {
 
     @Autowired
     private ClientService clientService;
-
-    @Autowired
-    private ExternalService externalService;
 
     @GetMapping
     public Flux<Client> getAll(){
@@ -31,13 +31,12 @@ public class ClientController {
     }
 
     @PostMapping
-    public Mono<Client> save(@RequestBody Client client){
-        return clientService.save(client);
+    public Mono<Client> save(@Valid @RequestBody ClientDto clientDto){ return clientService.save(clientDto);
     }
 
     @PostMapping("/updClients")
-    public Mono<Client> update(@RequestBody Client client){
-        return clientService.update(client);
+    public Mono<Client> update(@Valid @RequestBody ClientDto clientDto){
+        return clientService.update(clientDto);
     }
 
     @PostMapping("/delete/{clientId}")
@@ -46,12 +45,12 @@ public class ClientController {
     }
 
     @PostMapping("/accounts/{clientId}")
-    public Mono<Account> saveAccount(@PathVariable("clientId") Integer clientId, @RequestBody Account account){
-        return externalService.saveAccount(clientId, account);
+    public Mono<AccountDto> saveAccount(@PathVariable("clientId") Integer clientId, @RequestBody AccountDto accountDto){
+        return clientService.saveExternalAccount(clientId, accountDto);
     }
 
     @PostMapping("/credits/{clientId}")
-    public Mono<Credit> saveCredit(@PathVariable("clientId") Integer clientId, @RequestBody Credit credit){
-        return externalService.saveCredit(clientId, credit);
+    public Mono<CreditDto> saveCredit(@PathVariable("clientId") Integer clientId, @RequestBody CreditDto creditDto){
+        return clientService.saveExternalCredit(clientId, creditDto);
     }
 }

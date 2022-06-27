@@ -1,8 +1,8 @@
 package com.nttdata.bank.client.service;
 
 
-import com.nttdata.bank.client.model.document.Account;
-import com.nttdata.bank.client.model.document.Credit;
+import com.nttdata.bank.client.model.entity.dto.AccountDto;
+import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -22,22 +22,22 @@ public class ExternalService {
                                         .builder()
                                         .baseUrl("http://localhost:8004")
                                         .build();
-    public Mono<Account> saveAccount(Integer clientId, Account account){
-        account.setClientId(clientId);
+    public Mono<AccountDto> saveAccount(Integer clientId, AccountDto accountDto){
+        accountDto.setClientId(clientId);
         return webAccount.post()
-                         .uri("/accounts", account)
+                         .uri("/accounts", accountDto)
                          .accept(MediaType.APPLICATION_JSON)
                          .retrieve()
-                         .bodyToMono(Account.class);
+                         .bodyToMono(AccountDto.class);
     }
 
-    public Mono<Credit> saveCredit(Integer clientId, Credit credit){
-        credit.setClientId(clientId);
+    public Mono<CreditDto> saveCredit(Integer clientId, CreditDto creditDto){
+        creditDto.setClientId(clientId);
         return webCredit.post()
-                .uri("/credits", credit)
+                .uri("/credits", creditDto)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(Credit.class);
+                .bodyToMono(CreditDto.class);
     }
 }
 

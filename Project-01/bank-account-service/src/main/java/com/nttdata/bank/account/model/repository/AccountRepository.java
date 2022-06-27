@@ -1,6 +1,6 @@
 package com.nttdata.bank.account.model.repository;
 
-import com.nttdata.bank.account.model.document.Account;
+import com.nttdata.bank.account.model.entity.document.Account;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;

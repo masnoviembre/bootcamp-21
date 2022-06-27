@@ -1,8 +1,10 @@
 package com.nttdata.bank.account.service;
 
-import com.nttdata.bank.account.model.document.Account;
+import com.nttdata.bank.account.model.entity.document.Account;
+import com.nttdata.bank.account.model.entity.dto.*;
 import com.nttdata.bank.account.model.repository.AccountRepository;
 import com.nttdata.bank.account.model.service.AccountService;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -14,19 +16,27 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    private Mapper mapper;
+
+    @Autowired
+    private ExternalService externalService;
+
     @Override
     public Flux<Account> getAll() {
-        return this.accountRepository.findAll();
+        return accountRepository.findAll();
     }
 
     @Override
-    public Mono<Account> save(Account account) {
-        return this.accountRepository.save(account);
+    public Mono<Account> save( Integer clientId, Integer productId, AccountDto accountDto) {
+        Account accountMono = mapper.map(accountDto, Account.class);
+        return accountRepository.save(accountMono);
     }
 
     @Override
-    public Mono<Account> update(Account account) {
-        return this.accountRepository.save(account);
+    public Mono<Account> update(AccountDto accountDto) {
+        Account accountMono = mapper.map(accountDto, Account.class);
+        return accountRepository.save(accountMono);
     }
 
     @Override
@@ -40,8 +50,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Flux<Account> findByClientId(Integer clientId) {
+    public Flux<Account> findAccountByClientId(Integer clientId) {
         return this.accountRepository.findAll()
                 .filter(p->p.getClientId()==clientId);
     }
+
+    @Override
+    public Mono<ClientDto> findClientByClientId(Integer clientId){
+        return externalService.findClientByClientId(clientId);
+    }
+
+    @Override
+    public Mono<ProductDto> findProductByProductId(Integer productId){
+        return externalService.findProductByProductId(productId);
+    }
+
 }

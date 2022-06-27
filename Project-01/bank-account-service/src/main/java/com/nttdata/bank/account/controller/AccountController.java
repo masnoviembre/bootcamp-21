@@ -1,6 +1,7 @@
 package com.nttdata.bank.account.controller;
 
-import com.nttdata.bank.account.model.document.Account;
+import com.nttdata.bank.account.model.entity.document.Account;
+import com.nttdata.bank.account.model.entity.dto.AccountDto;
 import com.nttdata.bank.account.model.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,18 +26,20 @@ public class AccountController {
     }
 
     @GetMapping("/byClient/{clientId}")
-    public Flux<Account> getByClientId(@PathVariable("clientId") int clientId){
-        return accountService.findByClientId(clientId);
+    public Flux<Account> getAccountByClientId(@PathVariable("clientId") Integer clientId){
+        return accountService.findAccountByClientId(clientId);
     }
 
     @PostMapping
-    public Mono<Account> save(@RequestBody Account account){
-        return accountService.save(account);
+    public Mono<Account> save(@PathVariable("clientId") Integer clientId,
+                              @PathVariable("productId") Integer producId,
+                              @RequestBody AccountDto accountDto){
+        return accountService.save(clientId, producId, accountDto);
     }
 
     @PostMapping("/updAccounts")
-    public Mono<Account> update(@RequestBody Account account){
-        return accountService.update(account);
+    public Mono<Account> update(@RequestBody AccountDto accountDto){
+        return accountService.update(accountDto);
     }
 
     @PostMapping("/delete/{accountId}")

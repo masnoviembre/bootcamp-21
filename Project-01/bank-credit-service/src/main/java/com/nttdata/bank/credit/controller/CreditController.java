@@ -1,6 +1,7 @@
 package com.nttdata.bank.credit.controller;
 
-import com.nttdata.bank.credit.model.document.Credit;
+import com.nttdata.bank.credit.model.entity.document.Credit;
+import com.nttdata.bank.credit.model.entity.dto.CreditDto;
 import com.nttdata.bank.credit.model.service.CreditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +25,21 @@ public class CreditController {
         return creditService.findById(creditId);
     }
 
+    @GetMapping("/byClient/{clientId}")
+    public Flux<Credit> getCreditByClientId(@PathVariable("clientId") Integer clientId){
+        return creditService.findCreditByClientId(clientId);
+    }
+
     @PostMapping
-    public Mono<Credit> save(@RequestBody Credit credit){
-        return creditService.save(credit);
+    public Mono<Credit> save(@PathVariable("clientId") Integer clientId,
+                              @PathVariable("productId") Integer producId,
+                              @RequestBody CreditDto creditDto){
+        return creditService.save(clientId, producId, creditDto);
     }
 
     @PostMapping("/updCredit")
-    public Mono<Credit> update(@RequestBody Credit credit){
-        return creditService.update(credit);
+    public Mono<Credit> update(@RequestBody CreditDto creditDto){
+        return creditService.update(creditDto);
     }
 
     @PostMapping("/delete/{creditId}")

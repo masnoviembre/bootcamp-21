@@ -1,8 +1,10 @@
 package com.nttdata.bank.product.service;
 
-import com.nttdata.bank.product.model.document.Product;
+import com.nttdata.bank.product.model.entity.document.Product;
+import com.nttdata.bank.product.model.entity.dto.ProductDto;
 import com.nttdata.bank.product.model.repository.ProductRepository;
 import com.nttdata.bank.product.model.service.ProductService;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -14,19 +16,24 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private Mapper mapper;
+
     @Override
     public Flux<Product> getAll() {
         return this.productRepository.findAll();
     }
 
     @Override
-    public Mono<Product> save(Product product) {
-        return this.productRepository.save(product);
+    public Mono<Product> save(ProductDto productDto) {
+        Product productMono = mapper.map(productDto, Product.class);
+        return productRepository.save(productMono);
     }
 
     @Override
-    public Mono<Product> update(Product product) {
-        return this.productRepository.save(product);
+    public Mono<Product> update(ProductDto productDto) {
+        Product productMono = mapper.map(productDto, Product.class);
+        return this.productRepository.save(productMono);
     }
 
     @Override

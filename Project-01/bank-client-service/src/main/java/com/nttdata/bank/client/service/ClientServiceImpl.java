@@ -1,16 +1,16 @@
 package com.nttdata.bank.client.service;
 
-import com.nttdata.bank.client.model.document.Account;
-import com.nttdata.bank.client.model.document.Client;
-import com.nttdata.bank.client.model.document.Credit;
+import com.nttdata.bank.client.model.entity.document.Client;
+import com.nttdata.bank.client.model.entity.dto.AccountDto;
+import com.nttdata.bank.client.model.entity.dto.ClientDto;
+import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.repository.ClientRepository;
 import com.nttdata.bank.client.model.service.ClientService;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -19,21 +19,26 @@ public class ClientServiceImpl implements ClientService {
     private ClientRepository clientRepository;
 
     @Autowired
+    private Mapper mapper;
+
+    @Autowired
     private ExternalService externalService;
 
     @Override
     public Flux<Client> getAll() {
-        return this.clientRepository.findAll();
+        return clientRepository.findAll();
     }
 
     @Override
-    public Mono<Client> save(Client client) {
-        return this.clientRepository.save(client);
+    public Mono<Client> save(ClientDto clientDto) {
+        Client clientMono = mapper.map(clientDto, Client.class);
+        return clientRepository.save(clientMono);
     }
 
     @Override
-    public Mono<Client> update(Client client) {
-        return this.clientRepository.save(client);
+    public Mono<Client> update(ClientDto clientDto) {
+        Client clientMono = mapper.map(clientDto, Client.class);
+        return this.clientRepository.save(clientMono);
     }
 
     @Override
@@ -46,12 +51,14 @@ public class ClientServiceImpl implements ClientService {
         return this.clientRepository.findById(clientId);
     }
 
-
-    public Mono<Account> saveExternalAccount(Integer clientId, Account account){
-        return externalService.saveAccount(clientId, account);
+    @Override
+    public Mono<AccountDto> saveExternalAccount(Integer clientId, AccountDto accountDto){
+        return externalService.saveAccount(clientId, accountDto);
     }
 
-    public Mono<Credit> saveExternalCredit(Integer clientId, Credit credit){
-        return externalService.saveCredit(clientId, credit);
+    @Override
+    public Mono<CreditDto> saveExternalCredit(Integer clientId, CreditDto creditDto){
+        return externalService.saveCredit(clientId, creditDto);
     }
+
 }

@@ -1,6 +1,6 @@
 package com.nttdata.bank.product.model.repository;
 
-import com.nttdata.bank.product.model.document.Product;
+import com.nttdata.bank.product.model.entity.document.Product;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 

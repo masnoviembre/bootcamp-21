@@ -15,4 +15,6 @@ public class Credit {
     private Integer productId;
     private Float creditAmount;
     private Integer creditMonths;
+    private Float creditBalance;
+
 }

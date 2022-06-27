@@ -1,9 +1,7 @@
 package com.nttdata.bank.credit.model.service;
 
 import com.nttdata.bank.credit.model.entity.document.Credit;
-import com.nttdata.bank.credit.model.entity.dto.ClientDto;
 import com.nttdata.bank.credit.model.entity.dto.CreditDto;
-import com.nttdata.bank.credit.model.entity.dto.ProductDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -19,10 +17,6 @@ public interface CreditService {
 
     Mono<Credit> findById(Integer creditId);
 
-    Flux<Credit> findCreditByClientId(Integer clientId);
-
-    Mono<ClientDto> findClientByClientId(Integer clientId);
-
-    Mono<ProductDto> findProductByProductId(Integer productId);
+    Flux<Credit> findByClientId(Integer clientId);
 
 }

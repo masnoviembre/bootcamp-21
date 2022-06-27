@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 public class CreditDto {
     private Integer creditId;
     private String creditNumber;
-    private char creditType;
+    private Integer clientId;
+    private Integer productId;
     private Float creditAmount;
     private Integer creditMonths;
-    private Integer clientId;
+    private Float creditBalance;
 }

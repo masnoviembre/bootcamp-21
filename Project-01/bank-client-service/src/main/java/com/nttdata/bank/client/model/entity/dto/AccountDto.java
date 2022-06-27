@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class AccountDto {
     private Integer accountId;
     private String accountNumber;
-    private char accountType;
-    private Float accountMount;
     private Integer clientId;
+    private Integer productId;
+    private Float accountBalance;
 }

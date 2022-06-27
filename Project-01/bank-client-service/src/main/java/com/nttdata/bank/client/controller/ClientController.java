@@ -30,6 +30,16 @@ public class ClientController {
         return clientService.findById(clientId);
     }
 
+    @GetMapping("/accounts/{clientId}")
+    public Flux<AccountDto> getAccountByClientId(@PathVariable("clientId") Integer clientId){
+        return clientService.getAccountByClientId(clientId);
+    }
+
+    @GetMapping("/credits/{clientId}")
+    public Flux<CreditDto> getCreditByClientId(@PathVariable("clientId") Integer clientId){
+        return clientService.getCreditByClientId(clientId);
+    }
+
     @PostMapping
     public Mono<Client> save(@Valid @RequestBody ClientDto clientDto){ return clientService.save(clientDto);
     }
@@ -44,13 +54,4 @@ public class ClientController {
         return clientService.delete(clientId);
     }
 
-    @PostMapping("/accounts/{clientId}")
-    public Mono<AccountDto> saveAccount(@PathVariable("clientId") Integer clientId, @RequestBody AccountDto accountDto){
-        return clientService.saveExternalAccount(clientId, accountDto);
-    }
-
-    @PostMapping("/credits/{clientId}")
-    public Mono<CreditDto> saveCredit(@PathVariable("clientId") Integer clientId, @RequestBody CreditDto creditDto){
-        return clientService.saveExternalCredit(clientId, creditDto);
-    }
 }

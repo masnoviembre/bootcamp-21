@@ -19,7 +19,8 @@ public interface ClientService {
 
     Mono<Client> findById(Integer clientId);
 
-    Mono<AccountDto> saveExternalAccount(Integer clientId, AccountDto accountDto);
+    Flux<AccountDto> getAccountByClientId(Integer clientId);
 
-    Mono<CreditDto> saveExternalCredit(Integer clientId, CreditDto creditDto);
+    Flux<CreditDto> getCreditByClientId(Integer clientId);
+
 }

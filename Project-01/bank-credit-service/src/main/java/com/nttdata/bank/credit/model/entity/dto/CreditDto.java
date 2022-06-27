@@ -31,4 +31,7 @@ public class CreditDto {
 
     @Min(value=1, message="La cantidad de meses debe ser mayor igual a 1")
     private Integer creditMonths;
+
+    @NotNull(message="el saldo de cliente es requerido")
+    private Float creditBalance;
 }

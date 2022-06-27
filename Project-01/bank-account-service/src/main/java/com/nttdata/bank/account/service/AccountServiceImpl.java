@@ -19,9 +19,6 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private Mapper mapper;
 
-    @Autowired
-    private ExternalService externalService;
-
     @Override
     public Flux<Account> getAll() {
         return accountRepository.findAll();
@@ -29,6 +26,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Mono<Account> save( Integer clientId, Integer productId, AccountDto accountDto) {
+        accountDto.setClientId(clientId);
+        accountDto.setProductId(productId);
         Account accountMono = mapper.map(accountDto, Account.class);
         return accountRepository.save(accountMono);
     }
@@ -50,19 +49,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Flux<Account> findAccountByClientId(Integer clientId) {
+    public Flux<Account> findByClientId(Integer clientId) {
         return this.accountRepository.findAll()
                 .filter(p->p.getClientId()==clientId);
     }
 
-    @Override
-    public Mono<ClientDto> findClientByClientId(Integer clientId){
-        return externalService.findClientByClientId(clientId);
-    }
-
-    @Override
-    public Mono<ProductDto> findProductByProductId(Integer productId){
-        return externalService.findProductByProductId(productId);
-    }
 
 }

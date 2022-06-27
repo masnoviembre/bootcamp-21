@@ -27,5 +27,5 @@ public class AccountDto {
     private Integer productId;
 
     @Min(value=0, message="saldo debe ser mayor igual a cero")
-    private Float accountMount;
+    private Float accountBalance;
 }

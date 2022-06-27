@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/credits")
 public class CreditController {
@@ -27,14 +29,14 @@ public class CreditController {
 
     @GetMapping("/byClient/{clientId}")
     public Flux<Credit> getCreditByClientId(@PathVariable("clientId") Integer clientId){
-        return creditService.findCreditByClientId(clientId);
+        return creditService.findByClientId(clientId);
     }
 
-    @PostMapping
-    public Mono<Credit> save(@PathVariable("clientId") Integer clientId,
-                              @PathVariable("productId") Integer producId,
-                              @RequestBody CreditDto creditDto){
-        return creditService.save(clientId, producId, creditDto);
+    @PostMapping("/{clientId}/{productId}")
+    public Mono<Credit> save(@Valid @PathVariable("clientId") Integer clientId,
+                                    @PathVariable("productId") Integer productId,
+                                    @RequestBody CreditDto creditDto){
+        return creditService.save(clientId, productId, creditDto);
     }
 
     @PostMapping("/updCredit")

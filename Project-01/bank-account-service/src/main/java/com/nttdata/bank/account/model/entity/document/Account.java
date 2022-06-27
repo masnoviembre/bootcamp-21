@@ -13,5 +13,5 @@ public class Account {
     private String accountNumber;
     private Integer clientId;
     private Integer productId;
-    private Float accountMount;
+    private Float accountBalance;
 }

@@ -52,13 +52,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Mono<AccountDto> saveExternalAccount(Integer clientId, AccountDto accountDto){
-        return externalService.saveAccount(clientId, accountDto);
+    public Flux<AccountDto> getAccountByClientId(Integer clientId) {
+        return externalService.getAccountByClientId(clientId);
     }
 
     @Override
-    public Mono<CreditDto> saveExternalCredit(Integer clientId, CreditDto creditDto){
-        return externalService.saveCredit(clientId, creditDto);
+    public Flux<CreditDto> getCreditByClientId(Integer clientId) {
+        return externalService.getCreditByClientId(clientId);
     }
 
 }

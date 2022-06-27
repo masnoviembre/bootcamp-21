@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
@@ -27,14 +29,14 @@ public class AccountController {
 
     @GetMapping("/byClient/{clientId}")
     public Flux<Account> getAccountByClientId(@PathVariable("clientId") Integer clientId){
-        return accountService.findAccountByClientId(clientId);
+        return accountService.findByClientId(clientId);
     }
 
-    @PostMapping
-    public Mono<Account> save(@PathVariable("clientId") Integer clientId,
-                              @PathVariable("productId") Integer producId,
-                              @RequestBody AccountDto accountDto){
-        return accountService.save(clientId, producId, accountDto);
+    @PostMapping("/{clientId}/{productId}")
+    public Mono<Account> save(@Valid @PathVariable("clientId") Integer clientId,
+                                     @PathVariable("productId") Integer productId,
+                                     @RequestBody AccountDto accountDto){
+        return accountService.save(clientId, productId, accountDto);
     }
 
     @PostMapping("/updAccounts")

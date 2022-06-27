@@ -9,3 +9,15 @@ eureka:
       default-zone: http://localhost:8761/eureka
   instance:
     hostname: localhost
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: bank-product-service
+          uri: lb://bank-product-service
+          predicates:
+            - Path=/products/**

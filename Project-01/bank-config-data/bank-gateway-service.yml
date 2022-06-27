@@ -8,7 +8,6 @@ eureka:
     service-url:
       default-zone: http://localhost:8761/eureka
   instance:
-    prefer-ip-address=true
     hostname: localhost
 
 spring:
@@ -18,7 +17,7 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: bank-product-service
-          uri: lb://bank-product-service
-          predicates:
-            - Path=/products/**
+      - id: bank-product-service
+        uri: lb://bank-product-service
+        predicates:
+        - Path=/products/**

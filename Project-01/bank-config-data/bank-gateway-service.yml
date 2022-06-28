@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8085
 
 eureka:
   client:
@@ -32,3 +32,18 @@ spring:
             lb://bank-account-service
           predicates:
             - Path=/accounts/**
+        - id: bank-credit-service
+          uri:
+            lb://bank-credit-service
+          predicates:
+            - Path=/credits/**
+        - id: bank-transaction-account-service
+          uri:
+            lb://bank-transaction-account-service
+          predicates:
+            - Path=/transactions/accounts/**
+        - id: bank-transaction-credit-service
+          uri:
+            lb://bank-transaction-credit-service
+          predicates:
+            - Path=/transactions/credits/**

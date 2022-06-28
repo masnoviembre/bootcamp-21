@@ -15,12 +15,10 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ExternalService {
 
-    public  WebClient webAccount =WebClient.create("http://localhost:8003");
-
-    private final WebClient webCredit = WebClient
-                                        .builder()
-                                        .baseUrl("http://localhost:8004")
-                                        .build();
+    public  WebClient webAccount = WebClient.builder()
+                                   .baseUrl("http://localhost:8003").build();
+    private final WebClient webCredit = WebClient.builder()
+                                        .baseUrl("http://localhost:8004").build();
 
     public Flux<AccountDto> getAccountByClientId(Integer clientId) {
         return webAccount.get()

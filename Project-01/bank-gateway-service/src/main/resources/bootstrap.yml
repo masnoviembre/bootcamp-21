@@ -1,4 +1,4 @@
-spring:
+sspring:
   application:
     name: bank-gateway-service
   cloud:

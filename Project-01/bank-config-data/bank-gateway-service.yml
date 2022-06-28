@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 eureka:
   client:
@@ -11,15 +11,14 @@ eureka:
     hostname: localhost
 
 spring:
+  application:
+    name: bank-gateway-service
+
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: bank-product-service
-          uri: lb://bank-product-service
+          uri: 
+            lb://bank-product-service
           predicates:
             - Path=/products/**
-          filters:
-            - RewritePath=/products/(?.*),/$\{path}

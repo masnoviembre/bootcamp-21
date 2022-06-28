@@ -27,3 +27,8 @@ spring:
             lb://bank-product-service
           predicates:
             - Path=/products/**
+        - id: bank-account-service
+          uri:
+            lb://bank-account-service
+          predicates:
+            - Path=/accounts/**

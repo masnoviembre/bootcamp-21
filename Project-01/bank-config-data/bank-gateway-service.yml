@@ -11,6 +11,8 @@ eureka:
     hostname: localhost
 
 spring:
+  application:
+    name: bank-gateway-service
   cloud:
     gateway:
       discovery:
@@ -21,3 +23,5 @@ spring:
         uri: lb://bank-product-service
         predicates:
         - Path=/products/**
+        filters:
+        - RewritePath=/products/(?.*),/$\{path}

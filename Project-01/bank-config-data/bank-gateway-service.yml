@@ -17,6 +17,11 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: bank-client-service
+          uri: 
+            lb://bank-client-service
+          predicates:
+            - Path=/clients/**
         - id: bank-product-service
           uri: 
             lb://bank-product-service

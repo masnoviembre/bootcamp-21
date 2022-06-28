@@ -4,6 +4,7 @@ package com.nttdata.bank.client.service;
 import com.nttdata.bank.client.model.entity.dto.AccountDto;
 import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,10 +15,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ExternalService {
 
-     private final  WebClient webAccount = WebClient
-                                           .builder()
-                                           .baseUrl("http://localhost:8003")
-                                           .build();
+    public  WebClient webAccount =WebClient.create("http://bank-account-service");
 
     private final WebClient webCredit = WebClient
                                         .builder()

@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountDto {
-    private Integer accountId;
-    private String accountNumber;
-    private Integer clientId;
-    private Integer productId;
-    private Float accountBalance;
+  private Integer accountId;
+  private String accountNumber;
+  private Integer clientId;
+  private Integer productId;
+  private Float accountBalance;
 }

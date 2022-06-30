@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -21,24 +23,32 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Flux<Product> getAll() {
-        return this.productRepository.findAll();
+        return this.productRepository.findAll().switchIfEmpty(Flux.empty());
     }
 
     @Override
     public Mono<Product> save(ProductDto productDto) {
-        Product productMono = mapper.map(productDto, Product.class);
-        return productRepository.save(productMono);
+        return productRepository.existsById(productDto.getProductId())
+                .flatMap((isExist -> {
+                    if (!isExist)
+                        return productRepository.save(mapper.map(productDto, Product.class));
+                    else
+                        return Mono.empty();
+                }));
     }
 
     @Override
     public Mono<Product> update(ProductDto productDto) {
-        Product productMono = mapper.map(productDto, Product.class);
-        return this.productRepository.save(productMono);
-    }
+        return productRepository.findById(productDto.getProductId())
+                .flatMap(p->productRepository.save(mapper.map(productDto, Product.class)))
+                .switchIfEmpty(Mono.empty());
+     }
 
     @Override
     public Mono<Void> delete(Integer productId) {
-        return this.productRepository.deleteById(productId);
+        return productRepository.findById(productId)
+                .flatMap(p->productRepository.deleteById(p.getProductId()))
+                .switchIfEmpty(Mono.empty());
     }
 
     @Override

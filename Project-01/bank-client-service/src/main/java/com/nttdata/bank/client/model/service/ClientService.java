@@ -9,18 +9,18 @@ import reactor.core.publisher.Mono;
 
 public interface ClientService {
 
-    Flux<Client> getAll();
+  Flux<Client> getAll();
 
-    Mono<Client> save(ClientDto clientDto);
+  Mono<Client> save(ClientDto clientDto);
 
-    Mono<Client> update(ClientDto clientDto);
+  Mono<Client> update(ClientDto clientDto);
 
-    Mono<Void> delete(Integer clientId);
+  Mono<Void> delete(Integer clientId);
 
-    Mono<Client> findById(Integer clientId);
+  Mono<Client> findById(Integer clientId);
 
-   Flux<AccountDto> getAccountByClientId(Integer clientId);
+  Flux<AccountDto> getAccountByClientId(Integer clientId);
 
-   Flux<CreditDto> getCreditByClientId(Integer clientId);
+  Flux<CreditDto> getCreditByClientId(Integer clientId);
 
 }

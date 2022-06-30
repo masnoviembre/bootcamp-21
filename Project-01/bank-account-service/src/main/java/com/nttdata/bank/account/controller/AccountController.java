@@ -33,10 +33,8 @@ public class AccountController {
     }
 
     @PostMapping("/{clientId}/{productId}")
-    public Mono<Account> save(@Valid @PathVariable("clientId") Integer clientId,
-                                     @PathVariable("productId") Integer productId,
-                                     @RequestBody AccountDto accountDto){
-        return accountService.save(clientId, productId, accountDto);
+    public Mono<Account> save(@Valid @RequestBody AccountDto accountDto){
+        return accountService.save(accountDto);
     }
 
     @PostMapping("/updAccounts")

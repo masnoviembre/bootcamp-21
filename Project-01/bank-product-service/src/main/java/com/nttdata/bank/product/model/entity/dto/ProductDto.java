@@ -1,8 +1,6 @@
 package com.nttdata.bank.product.model.entity.dto;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.*;
 
@@ -17,7 +15,7 @@ public class ProductDto {
     private String productName;
 
     @NotNull
-    @Pattern(regexp = "^[A-P]{1}", message = "El tipo de Producto debe ser Pasivo ó Activo")
+    @Pattern(regexp = "^[A-P]", message = "El tipo de Producto debe ser Pasivo ó Activo")
     private String productType;
 
     @Min(value=0, message="Mantenimiento debe ser mayor o igual a cero")

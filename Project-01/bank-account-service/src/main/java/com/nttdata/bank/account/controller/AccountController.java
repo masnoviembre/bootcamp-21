@@ -32,8 +32,8 @@ public class AccountController {
         return accountService.findByClientId(clientId);
     }
 
-    @PostMapping("/{clientId}/{productId}")
-    public Mono<Account> save(@Valid @RequestBody AccountDto accountDto){
+    @PostMapping
+    public Mono<Account> save(@RequestBody AccountDto accountDto){
         return accountService.save(accountDto);
     }
 

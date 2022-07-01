@@ -74,6 +74,7 @@ public class ClientServiceImpl implements ClientService {
     return clientRepository.findById(clientId);
   }
 
+  @Override
   public Flux<AccountDto> getAccountByClientId(Integer clientId) {
     return externalService.getAccountByClientId(clientId);
   }

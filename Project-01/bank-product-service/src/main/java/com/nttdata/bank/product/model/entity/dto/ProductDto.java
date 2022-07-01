@@ -18,6 +18,8 @@ public class ProductDto {
     @Pattern(regexp = "^[A-P]", message = "El tipo de Producto debe ser Pasivo ó Activo")
     private String productType;
 
+    private String productSubType;
+
     @Min(value=0, message="Mantenimiento debe ser mayor o igual a cero")
     private Float productMaintenance;
 

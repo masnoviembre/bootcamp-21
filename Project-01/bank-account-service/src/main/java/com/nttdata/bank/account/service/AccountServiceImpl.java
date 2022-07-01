@@ -35,22 +35,22 @@ public class AccountServiceImpl implements AccountService {
     public Mono<Account> save(AccountDto accountDto) {
 
         //Obtiene el tipo de cliente (Personal o Empresarial)
-        String typeClient = mapper.map(externalFindByClientId(accountDto.getClientId()),
-                                                              ClientDto.class).getClientType();
+        //String typeClient = mapper.map(externalFindByClientId(accountDto.getClientId()),
+        //                                                      ClientDto.class).getClientType();
 
         // Obtiene el tipo de Cuenta (Ahorros, plazo fijo, corriente)
-        String typeProduct = mapper.map(externalFindByProductId(accountDto.getProductId()),
-                                                              ProductDto.class).getProductSubType();
+        //String typeProduct = mapper.map(externalFindByProductId(accountDto.getProductId()),
+        //                                                      ProductDto.class).getProductSubType();
 
         // Obtiene cuentas de clientes
-        Flux<Account> accountFlux = accountRepository.findByClientId(accountDto.getClientId());
+        //Flux<Account> accountFlux = accountRepository.findByClientId(accountDto.getClientId());
 
-        if ((typeClient.equals("P")  && Objects.isNull(accountFlux)) ||
-                (typeClient.equals("E")  && typeProduct.equals("CC"))) {
+        //if ((typeClient.equals("P")  && Objects.isNull(accountFlux)) ||
+        //        (typeClient.equals("E")  && typeProduct.equals("CC"))) {
             return accountRepository.save(mapper.map(accountDto, Account.class));
-        }
+        //}
 
-        return Mono.empty();
+        //return Mono.empty();
     }
 
     @Override

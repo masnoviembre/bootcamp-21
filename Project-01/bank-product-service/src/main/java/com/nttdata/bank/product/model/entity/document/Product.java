@@ -12,6 +12,7 @@ public class Product {
     private Integer productId;
     private String productName;
     private String productType;
+    private String productSubType;
     private Float productMaintenance;
     private Integer productMonthlyMovements;
 }

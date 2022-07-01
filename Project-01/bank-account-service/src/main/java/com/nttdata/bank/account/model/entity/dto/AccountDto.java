@@ -9,20 +9,13 @@ import javax.validation.constraints.Size;
 @Data
 public class AccountDto {
 
-    @NotNull(message="el código es requerido")
     private Integer accountId;
 
-    @NotNull
-    @Size(min=10, max=10, message="El documento debe teher entre {min} y {max} numeros")
-    @Pattern(regexp="[\\d]+", message="El documento sólo puede tener dígitos")
     private String accountNumber;
 
-    @NotNull(message="el código de cliente es requerido")
     private Integer clientId;
 
-    @NotNull(message="el código de producto es requerido")
     private Integer productId;
 
-    @Min(value=0, message="saldo debe ser mayor igual a cero")
     private Float accountBalance;
 }

@@ -1,13 +1,7 @@
-package com.nttdata.bank.credit.model.entity.dto;
+package com.nttdata.bank.transaction.credit.model.entity.dto;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Data

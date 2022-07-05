@@ -7,21 +7,27 @@ import com.nttdata.bank.account.model.entity.dto.ProductDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.awt.geom.Line2D;
+
 public interface AccountService {
 
-    Flux<Account> getAll();
+  Flux<Account> getAll();
 
-    Mono<Account> save(AccountDto accountDto);
+  Mono<Account> save(AccountDto accountDto);
 
-    Mono<Account> update(AccountDto accountDto);
+  Mono<Account> update(AccountDto accountDto);
 
-    Mono<Void> delete(Integer accountId);
+  Mono<Void> delete(Integer accountId);
 
-    Mono<Account> findById(Integer accountId);
+  Mono<Account> findById(Integer accountId);
 
-    Flux<Account> findByClientId(Integer clientId);
+  Flux<Account> findByClientId(Integer clientId);
 
-    Mono<ClientDto> externalFindByClientId(Integer clientId);
-    Mono<ProductDto> externalFindByProductId(Integer productId);
+  Mono<Account> findByAccountNumber(String accountNumber);
+
+
+
+
+
 
 }

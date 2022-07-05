@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.validation.constraints.Null;
+
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -54,18 +56,22 @@ public class ClientServiceImpl implements ClientService {
 
   @Override
   public Mono<Void> delete(Integer clientId) {
-
-    //verifica si cliente tiene cuentas
     Flux<AccountDto> accountDtoFlux = externalService.getAccountByClientId(clientId);
-
-    //verifica si cliente tiene creditos
-    Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
-
-    if (Objects.isNull(accountDtoFlux) && Objects.isNull(creditDtoFlux)) {
-      return clientRepository.findById(clientId)
-          .flatMap(p -> clientRepository.deleteById(p.getClientId()))
-          .switchIfEmpty(Mono.empty());
-    }
+    accountDtoFlux.hasElements()
+                  .map(isAvailable -> {
+                      if (!isAvailable) {
+                        Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
+                        creditDtoFlux.hasElements().map(isHave->{
+                          if (!isHave) {
+                            clientRepository.deleteById(clientId);
+                          } else {
+                            Mono.empty();
+                          }
+                          return Mono.empty();
+                        });
+                      }
+                    return null;
+                  });
     return Mono.empty();
   }
 
@@ -75,13 +81,25 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
-  public Flux<AccountDto> getAccountByClientId(Integer clientId) {
-    return externalService.getAccountByClientId(clientId);
+  public Flux<?> getAllByClientId(Integer clientId){
+    Flux<AccountDto> accountDtoFlux = externalService.getAccountByClientId(clientId);
+    Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
+    return Flux.mergeSequential(accountDtoFlux,creditDtoFlux);
   }
 
-  @Override
-  public Flux<CreditDto> getCreditByClientId(Integer clientId) {
-    return externalService.getCreditByClientId(clientId);
+  public Flux<?> getAllMovements (String typeProduct, String numberProduct) {
+      if (typeProduct.equalsIgnoreCase("A")) {
+        AccountDto accountDto = externalService.getAccountByAccountNumber(numberProduct);
+        if (accountDto != null ) {
+          return externalService.getAccountMovementById(accountDto.getAccountId());
+        } else {
+          CreditDto creditDto = externalService.getCreditByAccountNumber(numberProduct);
+          if (creditDto != null) {
+            return externalService.getCreditMovementById(creditDto.getCreditId());
+          }
+        }
+      }
+    return Flux.empty();
   }
 
 }

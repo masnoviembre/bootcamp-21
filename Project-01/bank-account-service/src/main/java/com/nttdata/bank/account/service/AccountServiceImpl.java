@@ -7,7 +7,6 @@ import com.nttdata.bank.account.model.service.AccountService;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import reactor.core.CoreSubscriber;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -16,75 +15,83 @@ import java.util.Objects;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-    @Autowired
-    private Mapper mapper;
+  @Autowired
+  private Mapper mapper;
 
-    @Autowired
-    private ExternalService externalService;
+  @Autowired
+  private ExternalService externalService;
+
+  @Override
+  public Flux<Account> getAll() {
+    return accountRepository.findAll().switchIfEmpty(Flux.empty());
+  }
 
 
-    @Override
-    public Flux<Account> getAll() {
-        return accountRepository.findAll().switchIfEmpty(Flux.empty());
-    }
+  @Override
+  public Mono<Account> save(AccountDto accountDto) {
+    return accountRepository.existsById(accountDto.getAccountId())
+        .flatMap(isExist -> {
+            if(!isExist) {
+              ClientDto p = externalService.externalFindByClientId(accountDto.getClientId());
+              if (p.getClientType().equalsIgnoreCase("P")) {
+                Flux<Account> accountFlux = accountRepository
+                                            .findByClientId(accountDto.getClientId());
+                accountFlux.hasElements()
+                    .map(isAvailable -> {
+                      if (!isAvailable) {
+                        return accountRepository.save(mapper.map(accountDto, Account.class));
+                      } else {
+                        return Mono.empty();
+                         }
+                    });
+              } else {
+                      ProductDto r = externalService.externalFindByProductId(accountDto.getProductId());
+                      if (r.getProductType().equalsIgnoreCase("CC")){
+                          return accountRepository.save(mapper.map(accountDto, Account.class));
+                      } else {
+                              return Mono.empty();
+                      }
+              }
+            }
+          return Mono.empty();
+        });
+  }
 
-    @Override
-    public Mono<Account> save(AccountDto accountDto) {
+  @Override
+  public Mono<Account> update(AccountDto accountDto) {
+    return accountRepository.findById(accountDto.getAccountId())
+        .map(c->mapper.map(accountDto, Account.class))
+        .flatMap(accountRepository::save)
+        .switchIfEmpty(Mono.empty());
+  }
 
-        //Obtiene el tipo de cliente (Personal o Empresarial)
-        //String typeClient = mapper.map(externalFindByClientId(accountDto.getClientId()),
-        //                                                      ClientDto.class).getClientType();
+  @Override
+  public Mono<Void> delete(Integer accountId) {
+    return accountRepository.findById(accountId)
+        .flatMap(a->accountRepository.deleteById(a.getAccountId()))
+            .switchIfEmpty(Mono.empty());
+  }
 
-        // Obtiene el tipo de Cuenta (Ahorros, plazo fijo, corriente)
-        //String typeProduct = mapper.map(externalFindByProductId(accountDto.getProductId()),
-        //                                                      ProductDto.class).getProductSubType();
+  @Override
+  public Mono<Account> findById(Integer accountId) {
+    return this.accountRepository.findById(accountId);
+  }
 
-        // Obtiene cuentas de clientes
-        //Flux<Account> accountFlux = accountRepository.findByClientId(accountDto.getClientId());
+  @Override
+  public Flux<Account> findByClientId(Integer clientId) {
+    return this.accountRepository.findAll()
+        .filter(p->p.getClientId()==clientId);
+  }
 
-        //if ((typeClient.equals("P")  && Objects.isNull(accountFlux)) ||
-        //        (typeClient.equals("E")  && typeProduct.equals("CC"))) {
-            return accountRepository.save(mapper.map(accountDto, Account.class));
-        //}
 
-        //return Mono.empty();
-    }
+  @Override
+  public Mono<Account> findByAccountNumber(String accountNumber) {
+    return this.accountRepository.findAll()
+        .filter(p->p.getAccountNumber() == accountNumber ).elementAt(1);
+  }
 
-    @Override
-    public Mono<Account> update(AccountDto accountDto) {
-        return accountRepository.findById(accountDto.getAccountId())
-                .map(c->mapper.map(accountDto, Account.class))
-                .flatMap(accountRepository::save)
-                .switchIfEmpty(Mono.empty());
-     }
 
-    @Override
-    public Mono<Void> delete(Integer accountId) {
-        return this.accountRepository.deleteById(accountId);
-    }
-
-    @Override
-    public Mono<Account> findById(Integer accountId) {
-        return this.accountRepository.findById(accountId);
-    }
-
-    @Override
-    public Flux<Account> findByClientId(Integer clientId) {
-        return this.accountRepository.findAll()
-                .filter(p->p.getClientId()==clientId);
-    }
-
-    @Override
-    public Mono<ClientDto> externalFindByClientId(Integer clientId) {
-        return externalService.externalFindByClientId((clientId));
-    }
-
-    @Override
-    public Mono<ProductDto> externalFindByProductId(Integer productId) {
-        return externalService.externalFindByProductId((productId));
-    }
-
-}
+  }

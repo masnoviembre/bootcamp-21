@@ -4,12 +4,19 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 @Data
 @Document(collection = "transactions_accounts")
 public class TransactionAccount {
     @Id
-    private Integer transactionAccountId;
-    private String transactionAccountType;
+    private Integer transactionId;
+    private String transactionType; //Cargo - Abomo
+    private String transactionMethod; // Metodo Tarjeta, ventanilla
     private Integer accountId;
-    private Float transactionAccountAmount;
+    private String accountNumber;
+    private String cardNumber;
+    private Float transactionAmount;
+    private String depositorDocument;
+    private Date transactionDate;
 }

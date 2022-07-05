@@ -19,8 +19,8 @@ public interface ClientService {
 
   Mono<Client> findById(Integer clientId);
 
-  Flux<AccountDto> getAccountByClientId(Integer clientId);
+  Flux<?> getAllByClientId(Integer clientId);
 
-  Flux<CreditDto> getCreditByClientId(Integer clientId);
+  Flux<?> getAllMovements (String typeProduct, String numberProduct);
 
 }

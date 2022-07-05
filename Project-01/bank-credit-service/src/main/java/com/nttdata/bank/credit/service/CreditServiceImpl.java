@@ -25,22 +25,30 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
-    public Mono<Credit> save( Integer clientId, Integer productId, CreditDto creditDto) {
-        creditDto.setClientId(clientId);
-        creditDto.setProductId(productId);
-        Credit creditMono = mapper.map(creditDto, Credit.class);
-        return creditRepository.save(creditMono);
+    public Mono<Credit> save( CreditDto creditDto) {
+        return creditRepository.existsById(creditDto.getCreditId())
+                .flatMap((isExist-> {
+                    if (!isExist) {
+                        return creditRepository.save(mapper.map(creditDto, Credit.class));
+                    } else {
+                        return Mono.empty();
+                    }
+                }));
     }
 
     @Override
     public Mono<Credit> update(CreditDto creditDto) {
-        Credit creditMono = mapper.map(creditDto, Credit.class);
-        return creditRepository.save(creditMono);
+        return creditRepository.findById(creditDto.getCreditId())
+            .map(c->mapper.map(creditDto,Credit.class))
+            .flatMap(creditRepository::save)
+            .switchIfEmpty(Mono.empty());
     }
 
     @Override
     public Mono<Void> delete(Integer creditId) {
-        return creditRepository.deleteById(creditId);
+        return creditRepository.findById(creditId)
+            .flatMap(p->creditRepository.deleteById(creditId)
+                .switchIfEmpty(Mono.empty()));
     }
 
     @Override
@@ -51,7 +59,7 @@ public class CreditServiceImpl implements CreditService {
     @Override
     public Flux<Credit> findByClientId(Integer clientId) {
         return creditRepository.findAll()
-                .filter(p->p.getClientId()==clientId);
+                .filter(p->p.getClientId() == clientId);
     }
 
 }

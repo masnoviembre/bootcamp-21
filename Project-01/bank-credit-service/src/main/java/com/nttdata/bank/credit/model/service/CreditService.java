@@ -9,7 +9,7 @@ public interface CreditService {
 
     Flux<Credit> getAll();
 
-    Mono<Credit> save(Integer clientId, Integer productId, CreditDto creditDto);
+    Mono<Credit> save(CreditDto creditDto);
 
     Mono<Credit> update(CreditDto creditDto);
 

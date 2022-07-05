@@ -3,6 +3,7 @@ package com.nttdata.bank.transaction.account.controller;
 import com.nttdata.bank.transaction.account.model.entity.document.TransactionAccount;
 import com.nttdata.bank.transaction.account.model.entity.dto.TransactionAccountDto;
 import com.nttdata.bank.transaction.account.model.service.TransactionAccountService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -21,14 +22,19 @@ public class TransactionAccountController {
     }
 
     @GetMapping("/{accountId}")
-    public Mono<TransactionAccount> getById(@PathVariable("transactionAccountId") Integer transactionAccountId){
+    public Flux<TransactionAccount> getAllByNumberCard(@PathVariable("transactionAccountId") String accountNumber){
+        return transactionAccountService.getAllByNumberCard(accountNumber);
+    }
+
+    @GetMapping("/getAllByNumberCard/{numberCard}")
+    public Mono<TransactionAccount> getAllByNumberCard (@PathVariable("numberCard") Integer transactionAccountId){
         return transactionAccountService.findById(transactionAccountId);
     }
 
+    @CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
     @PostMapping
-    public Mono<TransactionAccount> save(@PathVariable("accountId") Integer accountId,
-                                         @RequestBody TransactionAccountDto transactionAccountDto){
-        return transactionAccountService.save(accountId, transactionAccountDto);
+    public Mono<TransactionAccount> save(@RequestBody TransactionAccountDto transactionAccountDto){
+        return transactionAccountService.save(transactionAccountDto);
     }
 
     @PostMapping("/updTransaction")
@@ -36,9 +42,20 @@ public class TransactionAccountController {
         return transactionAccountService.update(transactionAccountDto);
     }
 
+    @CircuitBreaker(name = "deleteCB", fallbackMethod = "fallBackDeleteById")
     @PostMapping("/delete/{transactionAccountId}")
-    public Mono<Void> deleteBy(@PathVariable("transactionAccountId") Integer transactionAccountId){
+    public Mono<Void> deleteById(@PathVariable("transactionAccountId") Integer transactionAccountId){
         return transactionAccountService.delete(transactionAccountId);
+    }
+
+    public Flux<?> fallBackSave (@RequestBody TransactionAccountDto transactionAccountDto,
+                                             RuntimeException e ){
+        return Flux.just("Petición en espera");
+    }
+
+    public Flux<?> fallBackDeleteById (@RequestBody TransactionAccountDto transactionAccountDto,
+                                 RuntimeException e ){
+        return Flux.just("Petición en espera");
     }
 
 }

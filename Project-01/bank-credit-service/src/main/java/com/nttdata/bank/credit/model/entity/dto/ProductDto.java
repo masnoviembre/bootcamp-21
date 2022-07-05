@@ -1,4 +1,4 @@
-package com.nttdata.bank.account.model.entity.dto;
+package com.nttdata.bank.credit.model.entity.dto;
 
 import lombok.Data;
 

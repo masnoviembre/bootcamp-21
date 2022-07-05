@@ -9,12 +9,14 @@ public interface TransactionAccountService {
 
     Flux<TransactionAccount> getAll();
 
-    Mono<TransactionAccount> save(Integer accountId, TransactionAccountDto transactionAccountDto);
+    Mono<TransactionAccount> save(TransactionAccountDto transactionAccountDto);
 
     Mono<TransactionAccount> update(TransactionAccountDto transactionAccountDto);
 
     Mono<Void> delete(Integer transactionAccountId);
 
     Mono<TransactionAccount> findById(Integer transactionAccountId);
+
+    Flux<TransactionAccount> getAllByNumberCard(String numberCard);
 
 }

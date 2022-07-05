@@ -32,11 +32,9 @@ public class CreditController {
         return creditService.findByClientId(clientId);
     }
 
-    @PostMapping("/{clientId}/{productId}")
-    public Mono<Credit> save(@Valid @PathVariable("clientId") Integer clientId,
-                                    @PathVariable("productId") Integer productId,
-                                    @RequestBody CreditDto creditDto){
-        return creditService.save(clientId, productId, creditDto);
+    @PostMapping
+    public Mono<Credit> save(@Valid @RequestBody CreditDto creditDto){
+        return creditService.save(creditDto);
     }
 
     @PostMapping("/updCredit")

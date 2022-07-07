@@ -21,17 +21,17 @@ public class TransactionAccountController {
         return transactionAccountService.getAll();
     }
 
-    @GetMapping("/{accountId}")
-    public Flux<TransactionAccount> getAllByNumberCard(@PathVariable("transactionAccountId") String accountNumber){
-        return transactionAccountService.getAllByNumberCard(accountNumber);
-    }
+//    @GetMapping("/{accountId}")
+//    public Flux<TransactionAccount> getAllByNumberCard(@PathVariable("transactionAccountId") String accountNumber){
+//        return transactionAccountService.getAllByNumberCard(accountNumber);
+//    }
 
-    @GetMapping("/getAllByNumberCard/{numberCard}")
-    public Mono<TransactionAccount> getAllByNumberCard (@PathVariable("numberCard") Integer transactionAccountId){
-        return transactionAccountService.findById(transactionAccountId);
-    }
+//    @GetMapping("/getAllByNumberCard/{numberCard}")
+//    public Mono<TransactionAccount> getAllByNumberCard (@PathVariable("numberCard") Integer transactionAccountId){
+//        return transactionAccountService.findById(transactionAccountId);
+//    }
 
-    @CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
+//    @CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
     @PostMapping
     public Mono<TransactionAccount> save(@RequestBody TransactionAccountDto transactionAccountDto){
         return transactionAccountService.save(transactionAccountDto);

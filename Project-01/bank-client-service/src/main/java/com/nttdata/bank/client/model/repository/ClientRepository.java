@@ -8,6 +8,6 @@ import reactor.core.publisher.Flux;
 @Repository
 public interface ClientRepository extends ReactiveMongoRepository<Client, Integer> {
   Flux<?> getAllByClientId(Integer clientId);
-  Flux<?> getAllMovements (String typeProduct, String numberProduct);
+  //Flux<?> getAllMovements (String typeProduct, String numberProduct);
 
 }

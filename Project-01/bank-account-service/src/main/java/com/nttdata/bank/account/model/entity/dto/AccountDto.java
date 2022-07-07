@@ -24,4 +24,5 @@ public class AccountDto {
   private List<String> accountHeadlines = new ArrayList<>();
   private List<String> accountSignatories = new ArrayList<>();
 
+
 }

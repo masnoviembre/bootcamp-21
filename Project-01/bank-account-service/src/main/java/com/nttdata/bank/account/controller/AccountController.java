@@ -11,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/accounts")
@@ -38,7 +39,20 @@ public class AccountController {
   public Mono<Account> getAccountByAccountNumber(@PathVariable("accountNumber") String accountNumber) {
     return accountService.findByAccountNumber(accountNumber);
   }
-  @CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
+
+  @GetMapping("/balanceByClientId/{clientId}")
+  public Flux<Object> getBalanceByClientId(@PathVariable("clientId") Integer clientId) {
+    return accountService.getBalanceByClientId(clientId);
+  }
+
+  @GetMapping("/productsByProductsId/{productId}")
+  public Flux<Account> getAccountByProductId(@PathVariable("productId") String productId,
+                                             @PathVariable("dateIni") String dateIni,
+                                             @PathVariable("dateEnd") String dateEnd) throws ParseException {
+    return accountService.getAccountByProductId(productId,dateIni,dateEnd);
+  }
+
+  //@CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
   @PostMapping
   public Mono<Account> save(@RequestBody AccountDto accountDto) {
     return accountService.save(accountDto);
@@ -54,8 +68,8 @@ public class AccountController {
     return accountService.delete(accountId);
   }
 
-  public Flux<?> fallBackSave (@RequestBody AccountDto accountDto, RuntimeException e ){
-    return Flux.just("Petición en espera");
+  public Flux<Account> fallBackSave (RuntimeException e ){
+    return Flux.empty();
   }
 
 }

@@ -8,6 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.awt.geom.Line2D;
+import java.text.ParseException;
+import java.util.Date;
 
 public interface AccountService {
 
@@ -25,9 +27,8 @@ public interface AccountService {
 
   Mono<Account> findByAccountNumber(String accountNumber);
 
+  Flux<Object> getBalanceByClientId (Integer clientId);
 
-
-
-
+  Flux<Account> getAccountByProductId (String productId,String dateIni, String dateEnd) throws ParseException;
 
 }

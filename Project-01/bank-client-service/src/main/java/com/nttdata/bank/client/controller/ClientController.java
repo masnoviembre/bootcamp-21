@@ -5,9 +5,8 @@ import com.nttdata.bank.client.model.entity.dto.AccountDto;
 import com.nttdata.bank.client.model.entity.dto.ClientDto;
 import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.service.ClientService;
-import javax.validation.Valid;
-
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +37,7 @@ public class ClientController {
   @CircuitBreaker(name = "allMoveCB", fallbackMethod = "fallBackGetAllMovementsByClientId")
   @GetMapping("/allMovements/{typeProduct}/{numberProduct}")
   public Flux<?> getAllMovements(@PathVariable("typeProduct") String typeProduct,
-                                 @PathVariable("numberProduct") String numberProduct ) {
+                                   @PathVariable("numberProduct") String numberProduct) {
     return clientService.getAllMovements(typeProduct, numberProduct);
   }
 
@@ -63,15 +62,15 @@ public class ClientController {
     return clientService.delete(clientId);
   }
 
-  public Flux<?> fallBackGetAllByClientId (@PathVariable("clientId") Integer clientId,
-                                                      RuntimeException e ){
-    return Flux.just("Petición en espera");
+  public Flux<?> fallBackGetAllByClientId(@PathVariable("clientId") Integer clientId,
+                                                      RuntimeException e) {
+    return Flux.just("Petición desde clientes en espera");
   }
 
   public Flux<?> fallBackGetAllMovements(@PathVariable("typeProduct") String typeProduct,
                                          @PathVariable("numberProduct") String numberProduct,
                                          RuntimeException e) {
-    return  Flux.just("Petición en espera");
+    return  Flux.just("Petición desde clientes en espera");
   }
 
 

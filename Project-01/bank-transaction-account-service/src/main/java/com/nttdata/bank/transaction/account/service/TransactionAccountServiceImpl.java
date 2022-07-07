@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 public class TransactionAccountServiceImpl implements TransactionAccountService {
 
@@ -30,22 +32,33 @@ public class TransactionAccountServiceImpl implements TransactionAccountService 
 
     @Override
     public Mono<TransactionAccount> save(TransactionAccountDto transactionAccountDto) {
-        AccountDto accountDto = externalService.externalFindAccountById (
+        Mono<AccountDto> accountDto = externalService.externalFindAccountById (
                                                             transactionAccountDto.getAccountNumber());
-        if (accountDto != null) {
-            TransactionAccount transactionAccountMono = mapper.map(transactionAccountDto,
-                TransactionAccount.class);
-            transactionAccountRepository.save(transactionAccountMono);
-            Float amount = transactionAccountDto.getTransactionAmount();
-            if (transactionAccountDto.getTransactionType().equalsIgnoreCase("C")) {
-                amount = amount * -1;
-            }
-            accountDto.setAccountBalance(accountDto.getAccountBalance() + amount);
-            externalService.externalUpdateBalance(accountDto);
-            return Mono.empty();
-        } else{
-            return Mono.empty();
-        }
+
+        //accountDto.subscribe(System.out::println).toString();
+
+        //AccountDto accountDto1 = mapper.map(accountDto, AccountDto.class);
+        //System.out.println(accountDto1.getAccountBalance());
+
+   return accountDto
+           .flatMap( instance ->{
+               System.out.println("pasa por aqui");
+               transactionAccountRepository.save(mapper.map(transactionAccountDto, TransactionAccount.class));
+
+                Float amount = transactionAccountDto.getTransactionAmount();
+                if (transactionAccountDto.getTransactionType().equalsIgnoreCase("C")) {
+                      amount = amount * -1;
+                }
+
+                AccountDto accountDto1 = new AccountDto();
+                accountDto1.setAccountId(instance.getAccountId());
+                accountDto1.setAccountBalance(instance.getAccountBalance() + amount);
+                externalService.externalUpdateBalance(accountDto1);
+
+                return Mono.empty();
+
+           });
+
     }
 
     public Mono<TransactionAccount> saveByCardNumber(TransactionAccountDto transactionAccountDto) {
@@ -58,15 +71,17 @@ public class TransactionAccountServiceImpl implements TransactionAccountService 
                        TransactionAccount transactionAccountMono = mapper.map(transactionAccountDto,
                                                                   TransactionAccount.class);
 
+
+
                        Float amount = transactionAccountDto.getTransactionAmount();
                        if (transactionAccountDto.getTransactionType().equalsIgnoreCase("C")) {
                             amount = amount * -1;
                         }
 
-                         AccountDto accountDto = externalService.externalFindAccountById (
+                         Mono<AccountDto> accountDto = externalService.externalFindAccountById (
                                                          transactionAccountDto.getAccountNumber());
-                        accountDto.setAccountBalance(accountDto.getAccountBalance() + amount);
-                        externalService.externalUpdateBalance(accountDto);
+                        //accountDto.setAccountBalance(accountDto.getAccountBalance() + amount);
+                        //externalService.externalUpdateBalance(accountDto);
                    }
                 }).subscribe();
 
@@ -95,9 +110,9 @@ public class TransactionAccountServiceImpl implements TransactionAccountService 
                 if (p.getTransactionType().equalsIgnoreCase("A")){
                     amount = amount * -1;
                 }
-                AccountDto accountDto = externalService.externalFindAccountById (accountNumber);
-                accountDto.setAccountBalance(accountDto.getAccountBalance() + amount);
-                externalService.externalUpdateBalance(accountDto);
+                Mono<AccountDto> accountDto = externalService.externalFindAccountById (accountNumber);
+                //accountDto.setAccountBalance(accountDto.getAccountBalance() + amount);
+                //externalService.externalUpdateBalance(accountDto);
                 return transactionAccountRepository.deleteById(p.getTransactionId());
             })
             .flatMap(a->transactionAccountRepository.deleteById(transactionAccountId)
@@ -110,9 +125,9 @@ public class TransactionAccountServiceImpl implements TransactionAccountService 
     }
 
     @Override
-    public Flux<TransactionAccount> getAllByNumberCard(String numberCard) {
+    public Flux<TransactionAccount> getAllByCardNumber(String cardNumber) {
       return transactionAccountRepository.findAll()
-                                        .filter(p->p.getAccountNumber() == numberCard);
+                                        .filter(p->p.getAccountNumber() == cardNumber);
   }
 
 

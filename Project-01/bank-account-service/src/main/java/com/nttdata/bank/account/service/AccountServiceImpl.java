@@ -10,6 +10,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -30,18 +35,32 @@ public class AccountServiceImpl implements AccountService {
   }
 
 
+  @SuppressWarnings({"checkstyle:CommentsIndentation", "checkstyle:SeparatorWrap"})
   @Override
   public Mono<Account> save(AccountDto accountDto) {
     return accountRepository.existsById(accountDto.getAccountId())
         .flatMap(isExist -> {
             if(!isExist) {
-              ClientDto p = externalService.externalFindByClientId(accountDto.getClientId());
-              if (p.getClientType().equalsIgnoreCase("P")) {
-                Flux<Account> accountFlux = accountRepository
-                                            .findByClientId(accountDto.getClientId());
+              ClientDto qq = externalService.externalFindByClientId(accountDto.getClientId());
+              if (qq.getClientType().equalsIgnoreCase("P")) {
+
+                Flux<Account> accountFlux = this.accountRepository.
+                                                findByClientId(accountDto.getClientId());
+
+
+/*            accountFlux.doOnNext(System.out::println).subscribe();
+             //System.out.print(accountFlux.subscribe().toString());
+              accountFlux.count()
+                      .flatMap(c-> {
+                  if (c.intValue() == 0){System.out.print("Esta Vacio");
+                } else { System.out.print("Esta Lleno");}
+                return null;
+              });*/
+
                 accountFlux.hasElements()
-                    .map(isAvailable -> {
-                      if (!isAvailable) {
+                    .flatMap (l->{
+                      System.out.print("OKOK");
+                      if (!l) {
                         return accountRepository.save(mapper.map(accountDto, Account.class));
                       } else {
                         return Mono.empty();
@@ -49,7 +68,7 @@ public class AccountServiceImpl implements AccountService {
                     });
               } else {
                       ProductDto r = externalService.externalFindByProductId(accountDto.getProductId());
-                      if (r.getProductType().equalsIgnoreCase("CC")){
+                      if (r.getProductSubType().equalsIgnoreCase("CC") ){
                           return accountRepository.save(mapper.map(accountDto, Account.class));
                       } else {
                               return Mono.empty();
@@ -83,15 +102,44 @@ public class AccountServiceImpl implements AccountService {
   @Override
   public Flux<Account> findByClientId(Integer clientId) {
     return this.accountRepository.findAll()
-        .filter(p->p.getClientId()==clientId);
+        .filter(p->p.getClientId().equals(clientId))
+        .switchIfEmpty(Mono.empty());
   }
 
 
   @Override
   public Mono<Account> findByAccountNumber(String accountNumber) {
     return this.accountRepository.findAll()
-        .filter(p->p.getAccountNumber() == accountNumber ).elementAt(1);
-  }
-
+               .filter(t->t.getAccountNumber().equals(accountNumber)).elementAt(0);
 
   }
+
+  @Override
+  public Flux<Object> getBalanceByClientId(Integer clientId) {
+    return this.accountRepository.findAll()
+        .filter(p->p.getClientId().equals(clientId))
+        .flatMap(x->{
+          Map<String, String> map = new HashMap<>();
+          map.put("accountNumber", x.getAccountNumber());
+          map.put("accountBalance", String.valueOf(x.getAccountBalance()));
+          return Mono.just(map);
+        });
+
+
+    }
+
+  @Override
+  public Flux<Account> getAccountByProductId(String productId, String dateIni, String dateEnd)
+                                              throws ParseException {
+    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    Date date1 = sdf.parse(dateIni);
+    Date date2 = sdf.parse(dateEnd);
+    return this.accountRepository.findAll()
+        .filter(p->p.getProductId().equals(productId) &&
+                   p.getAccountDateOpen().after(date1) &&
+                   p.getAccountDateOpen().before(date2))
+        .switchIfEmpty(Mono.empty());
+  }
+
+}
+

@@ -17,6 +17,6 @@ public interface TransactionAccountService {
 
     Mono<TransactionAccount> findById(Integer transactionAccountId);
 
-    Flux<TransactionAccount> getAllByNumberCard(String numberCard);
+    Flux<TransactionAccount> getAllByCardNumber(String cardNumber);
 
 }

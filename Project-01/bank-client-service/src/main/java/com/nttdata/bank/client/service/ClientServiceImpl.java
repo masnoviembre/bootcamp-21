@@ -7,13 +7,12 @@ import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.repository.ClientRepository;
 import com.nttdata.bank.client.model.service.ClientService;
 import java.util.Objects;
+import javax.validation.constraints.Null;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import javax.validation.constraints.Null;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -39,8 +38,7 @@ public class ClientServiceImpl implements ClientService {
         .flatMap((isExist -> {
           if (!isExist) {
             return clientRepository.save(mapper.map(clientDto, Client.class));
-          }
-          else {
+          } else {
             return Mono.empty();
           }
         }));
@@ -59,17 +57,18 @@ public class ClientServiceImpl implements ClientService {
     Flux<AccountDto> accountDtoFlux = externalService.getAccountByClientId(clientId);
     accountDtoFlux.hasElements()
                   .map(isAvailable -> {
-                      if (!isAvailable) {
-                        Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
-                        creditDtoFlux.hasElements().map(isHave->{
-                          if (!isHave) {
-                            clientRepository.deleteById(clientId);
-                          } else {
-                            Mono.empty();
-                          }
-                          return Mono.empty();
-                        });
-                      }
+                    if (!isAvailable) {
+                      Flux<CreditDto> creditDtoFlux = externalService
+                                                      .getCreditByClientId(clientId);
+                      creditDtoFlux.hasElements().map(isHave -> {
+                        if (!isHave) {
+                          clientRepository.deleteById(clientId);
+                        } else {
+                          Mono.empty();
+                        }
+                        return Mono.empty();
+                      });
+                    }
                     return null;
                   });
     return Mono.empty();
@@ -81,24 +80,25 @@ public class ClientServiceImpl implements ClientService {
   }
 
   @Override
-  public Flux<?> getAllByClientId(Integer clientId){
+  public Flux<Object> getAllByClientId(Integer clientId) {
     Flux<AccountDto> accountDtoFlux = externalService.getAccountByClientId(clientId);
     Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
-    return Flux.mergeSequential(accountDtoFlux,creditDtoFlux);
+    return Flux.mergeSequential(accountDtoFlux, creditDtoFlux);
   }
 
-  public Flux<?> getAllMovements (String typeProduct, String numberProduct) {
-      if (typeProduct.equalsIgnoreCase("A")) {
-        AccountDto accountDto = externalService.getAccountByAccountNumber(numberProduct);
-        if (accountDto != null ) {
-          return externalService.getAccountMovementById(accountDto.getAccountId());
-        } else {
-          CreditDto creditDto = externalService.getCreditByAccountNumber(numberProduct);
-          if (creditDto != null) {
-            return externalService.getCreditMovementById(creditDto.getCreditId());
-          }
+
+  public Flux<?> getAllMovements(String typeProduct, String numberProduct) {
+    if (typeProduct.equalsIgnoreCase("A")) {
+      AccountDto accountDto = externalService.getAccountByAccountNumber(numberProduct);
+      if (accountDto != null) {
+        return externalService.getAccountMovementById(accountDto.getAccountId());
+      } else {
+        CreditDto creditDto = externalService.getCreditByAccountNumber(numberProduct);
+        if (creditDto != null) {
+          return externalService.getCreditMovementById(creditDto.getCreditId());
         }
       }
+    }
     return Flux.empty();
   }
 

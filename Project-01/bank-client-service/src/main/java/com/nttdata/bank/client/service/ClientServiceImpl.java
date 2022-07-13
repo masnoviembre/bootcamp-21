@@ -69,26 +69,13 @@ public class ClientServiceImpl implements ClientService {
   //
 
   @Override
-  public Flux<Object> getAllByClientId(Integer clientId) {
+  public Flux<AccountDto> getAllByClientId(Integer clientId) {
     Flux<AccountDto> accountDtoFlux = externalService.getAccountByClientId(clientId);
     Flux<CreditDto> creditDtoFlux = externalService.getCreditByClientId(clientId);
-    return Flux.mergeSequential(accountDtoFlux, creditDtoFlux);
+    return accountDtoFlux;
+    //return Flux.concat(accountDtoFlux, creditDtoFlux);
   }
 
 
-  public Flux<?> getAllMovements(String typeProduct, String numberProduct) {
-    if (typeProduct.equalsIgnoreCase("A")) {
-      AccountDto accountDto = externalService.getAccountByAccountNumber(numberProduct);
-      if (accountDto != null) {
-        return externalService.getAccountMovementById(accountDto.getAccountId());
-      } else {
-        CreditDto creditDto = externalService.getCreditByAccountNumber(numberProduct);
-        if (creditDto != null) {
-          return externalService.getCreditMovementById(creditDto.getCreditId());
-        }
-      }
-    }
-    return Flux.empty();
-  }
 
 }

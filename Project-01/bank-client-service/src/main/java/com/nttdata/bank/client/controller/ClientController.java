@@ -1,6 +1,7 @@
 package com.nttdata.bank.client.controller;
 
 import com.nttdata.bank.client.model.entity.document.Client;
+import com.nttdata.bank.client.model.entity.dto.AccountDto;
 import com.nttdata.bank.client.model.entity.dto.ClientDto;
 import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.service.ClientService;
@@ -58,24 +59,10 @@ public class ClientController {
     return clientService.delete(clientId);
   }
 
-  //
 
-  @CircuitBreaker(name = "allMoveCB", fallbackMethod = "fallBackGetAllMovementsByClientId")
-  @GetMapping("/allMovements/{typeProduct}/{numberProduct}")
-  public Flux<?> getAllMovements(@PathVariable("typeProduct") String typeProduct,
-                                 @PathVariable("numberProduct") String numberProduct) {
-    return clientService.getAllMovements(typeProduct, numberProduct);
-  }
-
-  public Flux<?> fallBackGetAllMovements(@PathVariable("typeProduct") String typeProduct,
-                                         @PathVariable("numberProduct") String numberProduct,
-                                         RuntimeException e) {
-    return  Flux.just("Petición desde clientes en espera");
-  }
-
-  @CircuitBreaker(name = "allCB", fallbackMethod = "fallBackGetAllByClientId")
+  //@CircuitBreaker(name = "allCB", fallbackMethod = "fallBackGetAllByClientId")
   @GetMapping("/allProducts/{clientId}/")
-  public Flux<?> getAllByClientId(@PathVariable("clientId") Integer clientId) {
+  public Flux<AccountDto> getAllByClientId(@PathVariable("clientId") Integer clientId) {
     return clientService.getAllByClientId(clientId);
   }
 

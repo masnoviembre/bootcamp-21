@@ -22,7 +22,7 @@ public class ExternalService {
     return webClientBuilder.baseUrl("http://localhost:8003")
            .build()
            .get()
-           .uri("/accounts/byClient/{clientId}", clientId)
+           .uri("/accounts/balanceByClientId/{clientId}", clientId)
            .accept(MediaType.APPLICATION_JSON)
            .retrieve()
            .bodyToFlux(AccountDto.class);
@@ -32,7 +32,7 @@ public class ExternalService {
     return webClientBuilder.baseUrl("http://localhost:8004")
             .build()
             .get()
-            .uri("/credits/byClient/{clientId}", clientId)
+            .uri("/credits/balanceByClientId/{clientId}", clientId)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .bodyToFlux(CreditDto.class);

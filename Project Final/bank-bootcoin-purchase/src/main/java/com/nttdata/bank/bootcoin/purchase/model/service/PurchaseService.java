@@ -9,4 +9,6 @@ public interface PurchaseService {
     Mono<Purchase> save(Purchase purchase);
 
     Flux<Purchase> getAll();
+
+    void sendMessage(String topic, Purchase purchase);
 }

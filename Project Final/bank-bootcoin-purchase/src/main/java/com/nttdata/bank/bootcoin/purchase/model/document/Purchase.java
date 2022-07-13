@@ -14,6 +14,7 @@ public class Purchase {
 
   @Id
   private Integer purchaseId;
+  private Integer purchaseClientId;
   private Float amount;
   private String payMode;
 

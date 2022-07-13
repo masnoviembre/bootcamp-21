@@ -19,4 +19,6 @@ public interface CreditService {
 
     Flux<Credit> findByClientId(Integer clientId);
 
+    Flux<Object> getBalanceByClientId (Integer clientId);
+
 }

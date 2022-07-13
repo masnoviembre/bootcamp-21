@@ -10,4 +10,10 @@ spring:
       host: localhost
       port: 27017
       database: banca
-
+  redis:
+    host: localhost
+    port: 6379
+  cache:
+    redis:
+      time-to-live: 4000
+      cache-names: product

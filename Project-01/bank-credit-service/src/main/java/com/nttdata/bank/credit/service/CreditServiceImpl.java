@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 public class CreditServiceImpl implements CreditService {
 
@@ -62,4 +65,15 @@ public class CreditServiceImpl implements CreditService {
                 .filter(p->p.getClientId() == clientId);
     }
 
+    @Override
+    public Flux<Object> getBalanceByClientId(Integer clientId) {
+        return this.creditRepository.findAll()
+            .filter(p -> p.getClientId().equals(clientId))
+            .flatMap(x -> {
+                Map<String, String> map = new HashMap<>();
+                map.put("creditNumber", x.getCreditNumber());
+                map.put("creditLine", String.valueOf(x.getCreditLine()));
+                return Mono.just(map);
+            });
+    }
 }

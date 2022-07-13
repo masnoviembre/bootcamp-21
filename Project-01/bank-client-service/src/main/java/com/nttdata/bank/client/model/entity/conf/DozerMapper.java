@@ -1,4 +1,4 @@
-package com.nttdata.bank.client.model.repository.entity.conf;
+package com.nttdata.bank.client.model.entity.conf;
 
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;

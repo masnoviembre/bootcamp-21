@@ -1,4 +1,4 @@
-package com.nttdata.bank.client.model.repository.entity.dto;
+package com.nttdata.bank.client.model.entity.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

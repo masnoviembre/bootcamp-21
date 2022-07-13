@@ -17,6 +17,6 @@ public interface TransactionCreditService {
 
     Mono<TransactionCredit> findById(Integer transactionCreditId);
 
-    Flux<TransactionCredit> getAllByNumberCard(String numberCard);
+    Flux<TransactionCredit> getAllBycreditNumber(String creditNumber);
 
 }

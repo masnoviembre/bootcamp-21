@@ -1,4 +1,4 @@
-package com.nttdata.bank.client.model.repository.entity.document;
+package com.nttdata.bank.client.model.entity.document;
 
 
 import lombok.Data;

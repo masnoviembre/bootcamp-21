@@ -10,5 +10,12 @@ spring:
       host: localhost
       port: 27017
       database: banca
+  kafka:
+    bootstrap-server: localhost:9092
+    consumer:
+      group-id: myGroup
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+topic: creditosTopic
 
 

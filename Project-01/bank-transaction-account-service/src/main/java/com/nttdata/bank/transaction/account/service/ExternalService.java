@@ -39,15 +39,17 @@ public class ExternalService {
           .bodyToMono(AccountDto.class);
   }
 
-  public Mono<AccountDto> externalUpdateBalance(AccountDto accountDto) {
+  public AccountDto externalUpdateBalance(Integer accountId, Float amount) {
     return webClientBuilder.baseUrl("http://localhost:8003")
         .build()
         .post()
-        .uri("/accounts/updAccounts")
+        .uri(uriBuilder -> uriBuilder
+             .path("/accounts/updBalance/{accountId}/{amount}")
+             .build(accountId, amount))
         .accept(MediaType.APPLICATION_JSON)
-        .body(Mono.just(accountDto),AccountDto.class)
         .retrieve()
-        .bodyToMono(AccountDto.class);
+        .bodyToMono(AccountDto.class)
+        .block();
   }
 
 }

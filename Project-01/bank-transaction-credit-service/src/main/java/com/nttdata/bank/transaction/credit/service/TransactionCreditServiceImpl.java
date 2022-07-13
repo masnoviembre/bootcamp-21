@@ -30,23 +30,40 @@ public class TransactionCreditServiceImpl implements TransactionCreditService {
 
     @Override
     public Mono<TransactionCredit> save(TransactionCreditDto transactionCreditDto) {
-        CreditDto creditDto = externalService.externalFindCreditById (
-                                                            transactionCreditDto.getCreditNumber());
-        if (creditDto != null) {
-            TransactionCredit transactionCreditMono = mapper.map(transactionCreditDto,
-                                                        TransactionCredit.class);
-            transactionCreditRepository.save(transactionCreditMono);
-            Float amount = transactionCreditDto.getTransactionAmount();
-            if (transactionCreditDto.getTransactionType().equalsIgnoreCase("C")) {
-                amount = amount * -1;
-            }
-            creditDto.setCreditBalance(creditDto.getCreditBalance() + amount);
-            externalService.externalUpdateBalance(creditDto);
-            return Mono.empty();
-        } else {
-            return Mono.empty();
+
+        Float amount = transactionCreditDto.getTransactionAmount();
+        if (transactionCreditDto.getTransactionType().equalsIgnoreCase("C")) {
+            amount = amount * -1;
         }
+
+        return transactionCreditRepository.existsById(transactionCreditDto.getTransactionId())
+            .flatMap((isExist -> {
+                if (!isExist) {
+                    return transactionCreditRepository.save(mapper.map(transactionCreditDto,
+                        TransactionCredit.class));
+                } else {
+                    return Mono.empty();
+                }
+            }));
+
     }
+//        CreditDto creditDto = externalService.externalFindCreditById (
+//                                                            transactionCreditDto.getCreditNumber());
+//        if (creditDto != null) {
+//            TransactionCredit transactionCreditMono = mapper.map(transactionCreditDto,
+//                                                        TransactionCredit.class);
+//            transactionCreditRepository.save(transactionCreditMono);
+//            Float amount = transactionCreditDto.getTransactionAmount();
+//            if (transactionCreditDto.getTransactionType().equalsIgnoreCase("C")) {
+//                amount = amount * -1;
+//            }
+//            creditDto.setCreditBalance(creditDto.getCreditBalance() + amount);
+//            externalService.externalUpdateBalance(creditDto);
+//            return Mono.empty();
+//        } else {
+//            return Mono.empty();
+//        }
+//    }
 
     @Override
     public Mono<TransactionCredit> update(TransactionCreditDto transactionCreditDto) {
@@ -62,21 +79,17 @@ public class TransactionCreditServiceImpl implements TransactionCreditService {
     }
 
     @Override
-    public Mono<Void> delete(Integer transactionCreditId) {
-        return transactionCreditRepository.findById(transactionCreditId)
+    public Mono<Void> delete(Integer transactionId) {
+        return transactionCreditRepository.findById(transactionId)
             .map(p->{
-                String creditNumber = p.getCreditNumber();
                 Float amount = p.getTransactionAmount();
-                if (p.getTransactionType().equalsIgnoreCase("A")) {
+                if (p.getTransactionType().equalsIgnoreCase("A")){
                     amount = amount * -1;
                 }
-                CreditDto creditDto = externalService.externalFindCreditById(creditNumber);
-                creditDto.setCreditBalance(creditDto.getCreditBalance() + amount);
-                externalService.externalUpdateBalance(creditDto);
-                return transactionCreditRepository.deleteById(p.getCreditId());
+                return transactionCreditRepository.deleteById(p.getTransactionId());
             })
-            .flatMap(a->transactionCreditRepository.deleteById(transactionCreditId))
-            .switchIfEmpty(Mono.empty());
+            .flatMap(a->transactionCreditRepository.deleteById(transactionId)
+                .switchIfEmpty(Mono.empty()));
     }
 
     @Override
@@ -85,9 +98,9 @@ public class TransactionCreditServiceImpl implements TransactionCreditService {
     }
 
     @Override
-    public Flux<TransactionCredit> getAllByNumberCard(String numberCard) {
+    public Flux<TransactionCredit> getAllBycreditNumber(String creditNumber) {
         return transactionCreditRepository.findAll()
-            .filter(p->p.getCreditNumber() == numberCard);
+            .filter(p->p.getCreditNumber() == creditNumber);
     }
 
 

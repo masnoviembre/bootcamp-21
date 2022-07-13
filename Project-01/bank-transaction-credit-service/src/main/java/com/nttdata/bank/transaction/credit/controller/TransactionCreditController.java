@@ -21,12 +21,12 @@ public class TransactionCreditController {
         return transactionCreditService.getAll();
     }
 
-    @GetMapping("/{creditId}")
-    public Mono<TransactionCredit> getById(@PathVariable("transactionCreditId") Integer transactionCreditId){
-        return transactionCreditService.findById(transactionCreditId);
+    @GetMapping("/{transactionId}")
+    public Mono<TransactionCredit> getById(@PathVariable("transactionId") Integer transactionId){
+        return transactionCreditService.findById(transactionId);
     }
 
-    @CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
+    //@CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
     @PostMapping
     public Mono<TransactionCredit> save(@RequestBody TransactionCreditDto transactionCreditDto){
         return transactionCreditService.save(transactionCreditDto);
@@ -37,10 +37,10 @@ public class TransactionCreditController {
         return transactionCreditService.update(transactionAccountDto);
     }
 
-    @CircuitBreaker(name = "deleteCB", fallbackMethod = "fallBackDeleteById")
-    @PostMapping("/delete/{creditId}")
-    public Mono<Void> deleteById(@PathVariable("transactionCreditId") Integer transactionCreditId){
-        return transactionCreditService.delete(transactionCreditId);
+    //@CircuitBreaker(name = "deleteCB", fallbackMethod = "fallBackDeleteById")
+    @PostMapping("/delete/{transactionId}")
+    public Mono<Void> deleteById(@PathVariable("transactionId") Integer transactionId){
+        return transactionCreditService.delete(transactionId);
     }
 
     public Flux<?> fallBackSave (@RequestBody TransactionCreditDto transactionCreditDto,

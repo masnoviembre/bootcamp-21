@@ -10,12 +10,12 @@ import java.util.Date;
 @Document(collection = "transactions_credits")
 public class TransactionCredit {
     @Id
-    private Integer transactiontId;
+    private Integer transactionId;
     private String transactionType; // abomo - cargo
     private Integer creditId;
     private String creditNumber;
     private Float transactionAmount;
-    private Integer MonthPay;
+    private Integer duesNumber;
     private String depositorDocument;
     private Date transactionDate;
 }

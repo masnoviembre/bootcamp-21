@@ -38,6 +38,8 @@ public class ExternalService {
             .bodyToFlux(CreditDto.class);
   }
 
+  //
+
   public AccountDto getAccountByAccountNumber(String accountNumber) {
     return webClientBuilder.baseUrl("http://localhost:8003")
         .build()

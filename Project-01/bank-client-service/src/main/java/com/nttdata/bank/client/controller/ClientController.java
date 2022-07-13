@@ -1,21 +1,26 @@
 package com.nttdata.bank.client.controller;
 
 import com.nttdata.bank.client.model.entity.document.Client;
-import com.nttdata.bank.client.model.entity.dto.AccountDto;
 import com.nttdata.bank.client.model.entity.dto.ClientDto;
 import com.nttdata.bank.client.model.entity.dto.CreditDto;
 import com.nttdata.bank.client.model.service.ClientService;
+import com.nttdata.bank.client.model.service.KafkaCreditListener;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
 
 @RestController
 @RequestMapping("/clients")
@@ -24,7 +29,11 @@ public class ClientController {
   @Autowired
   private ClientService clientService;
 
+  @Autowired
+  KafkaCreditListener listener;
+
   @GetMapping
+  @ResponseStatus(HttpStatus.OK)
   public Flux<Client> getAll() {
     return clientService.getAll();
   }
@@ -34,25 +43,12 @@ public class ClientController {
     return clientService.findById(clientId);
   }
 
-  @CircuitBreaker(name = "allMoveCB", fallbackMethod = "fallBackGetAllMovementsByClientId")
-  @GetMapping("/allMovements/{typeProduct}/{numberProduct}")
-  public Flux<?> getAllMovements(@PathVariable("typeProduct") String typeProduct,
-                                   @PathVariable("numberProduct") String numberProduct) {
-    return clientService.getAllMovements(typeProduct, numberProduct);
-  }
-
-  @CircuitBreaker(name = "allCB", fallbackMethod = "fallBackGetAllByClientId")
-  @GetMapping("/allProducts/{clientId}/")
-  public Flux<?> getAllByClientId(@PathVariable("clientId") Integer clientId) {
-    return clientService.getAllByClientId(clientId);
-  }
-
   @PostMapping
   public Mono<Client> save(@Valid @RequestBody ClientDto clientDto) {
     return clientService.save(clientDto);
   }
 
-  @PostMapping("/updClients/{clientId}")
+  @PostMapping("/updClients")
   public Mono<Client> update(@Valid @RequestBody ClientDto clientDto) {
     return clientService.update(clientDto);
   }
@@ -62,9 +58,13 @@ public class ClientController {
     return clientService.delete(clientId);
   }
 
-  public Flux<?> fallBackGetAllByClientId(@PathVariable("clientId") Integer clientId,
-                                                      RuntimeException e) {
-    return Flux.just("Petición desde clientes en espera");
+  //
+
+  @CircuitBreaker(name = "allMoveCB", fallbackMethod = "fallBackGetAllMovementsByClientId")
+  @GetMapping("/allMovements/{typeProduct}/{numberProduct}")
+  public Flux<?> getAllMovements(@PathVariable("typeProduct") String typeProduct,
+                                 @PathVariable("numberProduct") String numberProduct) {
+    return clientService.getAllMovements(typeProduct, numberProduct);
   }
 
   public Flux<?> fallBackGetAllMovements(@PathVariable("typeProduct") String typeProduct,
@@ -73,6 +73,22 @@ public class ClientController {
     return  Flux.just("Petición desde clientes en espera");
   }
 
+  @CircuitBreaker(name = "allCB", fallbackMethod = "fallBackGetAllByClientId")
+  @GetMapping("/allProducts/{clientId}/")
+  public Flux<?> getAllByClientId(@PathVariable("clientId") Integer clientId) {
+    return clientService.getAllByClientId(clientId);
+  }
 
+  public Flux<?> fallBackGetAllByClientId(@PathVariable("clientId") Integer clientId,
+                                                      RuntimeException e) {
+    return Flux.just("Petición desde clientes en espera");
+  }
+
+
+  //
+  @GetMapping(value = "credits", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<CreditDto> credits() {
+    return listener.getCredits();
+  }
 
 }

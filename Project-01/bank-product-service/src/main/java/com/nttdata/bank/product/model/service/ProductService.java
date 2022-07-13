@@ -7,14 +7,14 @@ import reactor.core.publisher.Mono;
 
 public interface ProductService {
 
-    Flux<Product> getAll();
+  Flux<Product> getAll();
 
-    Mono<Product> save(ProductDto productDto);
+  Mono<Product> save(ProductDto productDto);
 
-    Mono<Product> update(ProductDto productDto);
+  Mono<Product> update(ProductDto productDto);
 
-    Mono<Void> delete(Integer productId);
+  Mono<Void> delete(Integer productId);
 
-    Mono<Product> findById(Integer productId);
+  Mono<Product> findById(Integer productId);
 
 }

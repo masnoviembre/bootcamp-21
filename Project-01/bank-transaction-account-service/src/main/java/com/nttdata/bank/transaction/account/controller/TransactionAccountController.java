@@ -21,6 +21,12 @@ public class TransactionAccountController {
         return transactionAccountService.getAll();
     }
 
+    @GetMapping("/{transactionId}")
+    public Mono<TransactionAccount> getById(@PathVariable("transactionId") Integer transactionId){
+        return transactionAccountService.findById(transactionId);
+    }
+
+
 //    @GetMapping("/{accountId}")
 //    public Flux<TransactionAccount> getAllByNumberCard(@PathVariable("transactionAccountId") String accountNumber){
 //        return transactionAccountService.getAllByNumberCard(accountNumber);
@@ -42,7 +48,7 @@ public class TransactionAccountController {
         return transactionAccountService.update(transactionAccountDto);
     }
 
-    @CircuitBreaker(name = "deleteCB", fallbackMethod = "fallBackDeleteById")
+    //@CircuitBreaker(name = "deleteCB", fallbackMethod = "fallBackDeleteById")
     @PostMapping("/delete/{transactionAccountId}")
     public Mono<Void> deleteById(@PathVariable("transactionAccountId") Integer transactionAccountId){
         return transactionAccountService.delete(transactionAccountId);

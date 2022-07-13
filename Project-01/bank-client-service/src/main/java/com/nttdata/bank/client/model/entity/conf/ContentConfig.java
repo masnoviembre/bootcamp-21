@@ -1,4 +1,4 @@
-package com.nttdata.bank.client.model.repository.entity.conf;
+package com.nttdata.bank.client.model.entity.conf;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

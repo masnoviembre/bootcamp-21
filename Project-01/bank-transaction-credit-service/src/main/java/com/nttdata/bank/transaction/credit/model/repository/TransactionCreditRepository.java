@@ -7,5 +7,5 @@ import reactor.core.publisher.Flux;
 
 @Repository
 public interface TransactionCreditRepository extends ReactiveMongoRepository<TransactionCredit,Integer> {
-  Flux<TransactionCredit> getAllByNumberCard(String numberCard);
+  Flux<TransactionCredit> getAllBycreditNumber(String creditNumber);
 }

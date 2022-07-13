@@ -45,14 +45,6 @@ public class AccountController {
     return accountService.getBalanceByClientId(clientId);
   }
 
-  @GetMapping("/productsByProductsId/{productId}")
-  public Flux<Account> getAccountByProductId(@PathVariable("productId") String productId,
-                                             @PathVariable("dateIni") String dateIni,
-                                             @PathVariable("dateEnd") String dateEnd) throws ParseException {
-    return accountService.getAccountByProductId(productId,dateIni,dateEnd);
-  }
-
-  //@CircuitBreaker(name = "saveCB", fallbackMethod = "fallBackSave")
   @PostMapping
   public Mono<Account> save(@RequestBody AccountDto accountDto) {
     return accountService.save(accountDto);
@@ -68,8 +60,11 @@ public class AccountController {
     return accountService.delete(accountId);
   }
 
-  public Flux<Account> fallBackSave (RuntimeException e ){
-    return Flux.empty();
+  @PostMapping("/updBalance/{accountId}/{amount}")
+  public Mono<Account> UpdBalance(@PathVariable("accountId") Integer accountId,
+                                  @PathVariable("amount") Float amount) {
+    return accountService.UpdBalance(accountId, amount);
   }
+
 
 }
